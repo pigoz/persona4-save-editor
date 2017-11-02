@@ -1,0 +1,24 @@
+{
+  "name": "react-template",
+  "private": true,
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bs-loader": "^2.0.0-beta3",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "reason-react": "^0.2.4"
+  },
+  "devDependencies": {
+    "bs-platform": "^2.0.0",
+    "webpack": "^3.8.1"
+  }
+}
