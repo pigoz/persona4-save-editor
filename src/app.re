@@ -8,27 +8,19 @@ type some_union =
  | C(c)
  | D(d);
 
-/* i costruttori sono necessari per poter passare il tipo come props,
-   la tipizzazione non è strutturale appena si tirano in mezzo type
-   constructors
-
-   esempio del chiamante:
-   ReactDOMRe.renderToElementWithId(<App msg={App.make_da()}/>, "index");
-*/
 let make_a = (x) => A({ x: x });
 let make_b = (x) => B({ x: x });
 let make_c = (x) => C({ y: x });
 let make_da = () => D(A);
 let make_db = () => D(B(1));
 
-/* inferisce da solo union -> string */
 let getMsg = (msg) => {
   switch msg {
   | A(a) => a.x
   | B(b) => string_of_int(b.x)
   | C(c) => c.y
   | D(d) => switch d {
-    | A => "D.A"
+    | A => "D.C"
     | B(_) => "D.B"
     }
   };
