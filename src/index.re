@@ -1,4 +1,1 @@
-ReactDOMRe.renderToElementWithId(
-  <App msg={App.make_da()}/>,
-  "container"
-);
+ReactDOMRe.renderToElementWithId(<App />, "container");
