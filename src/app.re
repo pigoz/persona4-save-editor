@@ -1,6 +1,6 @@
 let component = ReasonReact.statelessComponent("App");
 
-let parse = File.reader(Js.log);
+let parse = File.reader(x => x |> Parse.parse |> Js.log);
 
 let handleFileSelectionSafe = (event, _self) => {
   /* https://reasonml.github.io/reason-react/docs/en/event.html */
