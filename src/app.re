@@ -1,10 +1,21 @@
 let component = ReasonReact.statelessComponent("App");
-let handleClick = (_event, _self) => Js.log("clicked!");
+
+let parse = File.reader(Js.log);
+
+let handleFileSelectionSafe = (event, _self) => {
+  /* https://reasonml.github.io/reason-react/docs/en/event.html */
+  let target = ReactEventRe.Form.target(event);
+  let files = ReactDOMRe.domElementToObj(target)##files;
+  if (files##length == 1) {
+    parse(files[0]);
+  }
+};
 
 let make = (_children) => {
   ...component,
   render: (self) =>
     <div>
-      <Upload onUploaded=(self.handle(handleClick)) />
+      <FilePicker onChange={self.handle(handleFileSelectionSafe)} />
+      {ReasonReact.stringToElement("aa")}
     </div>
 };
