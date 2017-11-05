@@ -7,6 +7,8 @@ type b = Uint8Array.t;
 [@bs.send.pipe : b] external map2 : ((int, int) => int) => b = "map";
 [@bs.send.pipe : b] external filter : (int => bool) => b = "";
 [@bs.send.pipe : b] external filter2 : ((int, int) => bool) => b = "filter";
+[@bs.send.pipe : b] external reduce : (('a, int) => 'a, 'a) => 'a = "";
+[@bs.send] external reverse : ('b) => 'b = "";
 
 /* len is 16bit words (2-bytes) */
 let words = (~start, ~len, buffer) => {
@@ -22,6 +24,16 @@ let utf8: (b) => string = [%bs.raw {|
   }
 |}];
 
+let dropWhile = (fn: (int => bool), xs: b): b => {
+  let result = xs |> reduce((accu, el) => {
+    switch accu {
+    | None => fn(el) ? None : Some([|el|])
+    | Some(x) => Some(x |> Js.Array.append(el))
+    }
+  }, None);
+  Uint8Array.make(result |> Js.Option.getWithDefault([||]));
+};
+
 let asJString: (Uint8Array.t) => string =
   /* this is big-endian because lol psvita, ignore the least significant
    * byte since it's useless anyway */
@@ -30,4 +42,8 @@ let asJString: (Uint8Array.t) => string =
    * is saved by summing 96/0x60 to the actual unicode/ascii value, maybe they
    * store hiragana/katakana before A+96? */
   map(x => x - 0x60) >>
+  /* trim spaces */
+  reverse >>
+  dropWhile(x => x == 160) >>
+  reverse >>
   utf8;
