@@ -47,3 +47,9 @@ let asJString: (Uint8Array.t) => string =
   dropWhile(x => x == 160) >>
   reverse >>
   utf8;
+
+let uint32At = (~start: int, xs: Uint8Array.t): int => {
+  let buffer = xs |> Uint8Array.buffer;
+  let dw = DataView.fromBuffer(buffer);
+  DataView.getUint32LittleEndian(dw, start);
+};

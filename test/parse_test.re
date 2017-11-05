@@ -11,4 +11,9 @@ describe("parse", () => {
     let x = Parse.parse(Fixture.data0001);
     expect(x.player.last_name) |> toBe("Narukami");
   });
+
+  test("parses yen", () => {
+    let x = Parse.parse(Fixture.data0001);
+    expect(x.player.yen) |> toBe(77228);
+  });
 });
