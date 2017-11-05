@@ -9,12 +9,6 @@ type b = Uint8Array.t;
 [@bs.send.pipe : b] external reduce : (('a, int) => 'a, 'a) => 'a = "";
 [@bs.send] external reverse : ('b) => 'b = "";
 
-/* len is 16bit words (2-bytes) */
-let words = (~start, ~len, buffer) => {
-  let end_ = start + len * 2;
-  buffer |> subarray(~start, ~end_);
-};
-
 let utf8: (b) => string = [%bs.raw {|
   function(buffer) {
     // XXX: should probably only use the npm package on node? chrome has this
@@ -39,13 +33,12 @@ let fill: (int, 'a) => array('a) = [%bs.raw {|
   }
 |}];
 
-let stringAt = (~start: int, ~len: int, xs: Uint8Array.t): string => {
-  let buffer = xs |> Uint8Array.buffer;
-  let dw = DataView.fromBuffer(buffer);
+let stringAt = (~start: int, ~len: int, dw: DataView.t): string => {
   let xs = fill(len, start) |> Js.Array.map(x => {
     /* not sure why this is shifted by this value... */
     DataView.getUint16(dw, x) - 32864;
   });
+
   Uint8Array.make(xs) |>
   /* trim spaces */
   reverse |>
@@ -54,8 +47,5 @@ let stringAt = (~start: int, ~len: int, xs: Uint8Array.t): string => {
   utf8;
 };
 
-let uint32At = (~start: int, xs: Uint8Array.t): int => {
-  let buffer = xs |> Uint8Array.buffer;
-  let dw = DataView.fromBuffer(buffer);
+let uint32At = (~start: int, dw: DataView.t): int =>
   DataView.getUint32LittleEndian(dw, start);
-};
