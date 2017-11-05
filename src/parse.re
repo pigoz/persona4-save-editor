@@ -11,8 +11,8 @@ type save = {
 };
 
 let parse = (buf: Uint8Array.t): save => {
-  let last_name = (buf |> Buf.words(~start=16, ~len=8) |> Buf.asJString);
-  let first_name = (buf |> Buf.words(~start=34, ~len=8) |> Buf.asJString);
+  let last_name = buf |> Buf.stringAt(~start=16, ~len=8);
+  let first_name = buf |> Buf.stringAt(~start=34, ~len=8);
   let yen = buf |> Buf.uint32At(~start=88);
 
   {

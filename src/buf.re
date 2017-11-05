@@ -1,5 +1,4 @@
 open Js.Typed_array;
-open Prelude;
 type b = Uint8Array.t;
 
 [@bs.send.pipe : b] external subarray: (~start: int, ~end_: int) => b = "";
@@ -34,19 +33,26 @@ let dropWhile = (fn: (int => bool), xs: b): b => {
   Uint8Array.make(result |> Js.Option.getWithDefault([||]));
 };
 
-let asJString: (Uint8Array.t) => string =
-  /* this is big-endian because lol psvita, ignore the least significant
-   * byte since it's useless anyway */
-  filter2((_x, idx) => idx mod 2 !== 0) >>
-  /* not sure why but the most significant part in the unicode word
-   * is saved by summing 96/0x60 to the actual unicode/ascii value, maybe they
-   * store hiragana/katakana before A+96? */
-  map(x => x - 0x60) >>
+let fill: (int, 'a) => array('a) = [%bs.raw {|
+  function(len, start) {
+    return Array(len).fill(1).map((x, idx) => start + (idx * 2));
+  }
+|}];
+
+let stringAt = (~start: int, ~len: int, xs: Uint8Array.t): string => {
+  let buffer = xs |> Uint8Array.buffer;
+  let dw = DataView.fromBuffer(buffer);
+  let xs = fill(len, start) |> Js.Array.map(x => {
+    /* not sure why this is shifted by this value... */
+    DataView.getUint16(dw, x) - 32864;
+  });
+  Uint8Array.make(xs) |>
   /* trim spaces */
-  reverse >>
-  dropWhile(x => x == 160) >>
-  reverse >>
+  reverse |>
+  dropWhile(x => x == 160) |>
+  reverse |>
   utf8;
+};
 
 let uint32At = (~start: int, xs: Uint8Array.t): int => {
   let buffer = xs |> Uint8Array.buffer;
