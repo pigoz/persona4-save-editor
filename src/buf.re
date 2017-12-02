@@ -33,7 +33,7 @@ let fill: (int, 'a) => array('a) = [%bs.raw {|
   }
 |}];
 
-let stringAt = (~start: int, ~len: int, dw: DataView.t): string => {
+let str = (~start: int, ~len: int, dw: DataView.t): string => {
   let xs = fill(len, start) |> Js.Array.map(x => {
     /* not sure why this is shifted by this value... */
     DataView.getUint16(dw, x) - 32864;
@@ -47,5 +47,11 @@ let stringAt = (~start: int, ~len: int, dw: DataView.t): string => {
   utf8;
 };
 
-let uint32At = (~start: int, dw: DataView.t): int =>
+let uint8 = (~start: int, dw: DataView.t): int =>
+  DataView.getUint16LittleEndian(dw, start);
+
+let uint16 = (~start: int, dw: DataView.t): int =>
+  DataView.getUint16LittleEndian(dw, start);
+
+let uint32 = (~start: int, dw: DataView.t): int =>
   DataView.getUint32LittleEndian(dw, start);
