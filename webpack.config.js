@@ -26,12 +26,12 @@ module.exports = {
   entry: src('index.re'),
   output: {
     path: buildDir,
-    filename: 'app.js',
+    filename: 'app.bs.js',
   },
   module: {
     rules: [
       {
-        test: /\.(re|ml)$/,
+        test: /\.js$/,
         use: {
           loader: 'bs-loader',
           options: {
@@ -42,7 +42,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.re', '.ml', '.js'],
+    extensions: ['.js'],
   },
   plugins: uglify([
     new HtmlWebpackPlugin({
