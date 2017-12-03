@@ -1,27 +1,30 @@
 open Jest;
 open Expect;
+open Parse;
+
+let some = Js.Option.some;
 
 describe("parse", () => {
+  let x = parse(Fixture.data0001);
+
   test("parses first_name", () => {
-    let x = Parse.parse(Fixture.data0001);
-    expect(x.player.first_name) |> toBe("Yu");
+    expect(get("first_name", x)) |> toEqual(some(Str("Yu", 8)));
   });
 
   test("parses last_name", () => {
-    let x = Parse.parse(Fixture.data0001);
-    expect(x.player.last_name) |> toBe("Narukami");
+    expect(get("last_name", x)) |> toEqual(some(Str("Narukami", 8)));
   });
 
   test("parses yen", () => {
-    let x = Parse.parse(Fixture.data0001);
-    expect(x.player.yen) |> toBe(77228);
+    expect(get("yen", x)) |> toEqual(some(Uint32(77228)));
   });
 
+  /*
   test("parses persona", () => {
-    let x = Parse.parse(Fixture.data0001);
     Js.log(Skills.all[x.persona1.skill1]);
     expect(x.persona1.exists) |> toBe(1); /* true */
     expect(x.persona1.id) |> toBe(7); /* jack frost */
     expect(x.persona1.level) |> toBe(19);
   });
+  */
 });
